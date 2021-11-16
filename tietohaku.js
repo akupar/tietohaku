@@ -38,8 +38,13 @@
 	var $sp_output21 = $("#tulos_taydosa_ed");
 	var $sp_output22 = $("#tulos_taydosa_seur");
 
-	$frm_lomake.submit(function () {
+	$frm_lomake.submit(function ($event) {
 	    var urlpref = "http://runeberg.org/tieto/";
+            
+            $event.preventDefault();
+
+            $('#tulos').show();
+            
 	    if ( !window.sivut ) {
 		window.sivut = [].concat(window.osa1,
 					    window.osa2,
@@ -86,8 +91,16 @@
 	    }
 	    return false;
 	});
+
+        if ( $("#hakusana").val() !== "" ) {
+            $("#lomake").submit();
+        }
     }
 
+    if ( $("#hakusana").val() === "" ) {
+        $('#tulos').hide();
+    }
+    
     jQuery(document).ready(run);
 
 })(window);

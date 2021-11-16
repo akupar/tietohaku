@@ -1,0 +1,102 @@
+/* unicorn & jr labbar med stylesheets */
+
+.poem     {margin-left: 40px; margin-right: 40px; }
+.u        {text-decoration: underline; }
+.overline {text-decoration: overline; }
+.sc       {font-variant: small-caps; }
+.sp       {letter-spacing:0.125em; }
+/* unifont links are only needed by proof.pl,
+ * this is now solved with an HTML span tag instead.
+ * a        {font-family: 'unifont';}
+ */
+.graybox     {margin: 0; border: 1px solid rgb(20, 20, 20); padding: 3px 3px 3px 3px; background-color: rgb(220, 220, 220);}
+.topmenu     {font-family: helvetica, Verdana, Arial, sans-serif; font-size: 13px; text-decoration: none; color: white; border: 1px solid rgb(0, 0, 0);}
+.topmenuitem {font-family: helvetica; font-size: 13px; text-decoration: none; color: white;}
+.topfields   {font-size: 10px; font-family: Verdana, Helvetica, Arial, sans-serif;}
+form         {margin: 0;}
+table.b {
+border-width: thin;
+margin-left:auto; margin-right:auto;
+border-spacing: ;
+border-style: groove;
+border-color: gray;
+border-collapse: collapse;
+background-color: white;
+}
+table.b td {
+border-width: 1px;
+padding: 3px;
+border-style: outset;
+border-color: black;
+background-color: white;
+}
+table.o {
+border-spacing: ;
+margin-left:auto; margin-right:auto;
+border-style: none;
+border-collapse: collapse;
+background-color: white;
+}
+table.o td {
+border-width: 0px;
+padding: 5px;
+border-style: none;
+background-color: white;
+}
+
+table.f {
+border-width: 1px;
+border-color: gray;
+border-spacing: ;
+margin-left:auto; margin-right:auto;
+border-style: solid;
+border-collapse: collapse;
+background-color: white;
+}
+table.f td {
+border-width: 0px;
+padding: 5px;
+border-style: none;
+background-color: white;
+}
+
+table.c td {
+text-align: center;
+}
+table.l td {
+text-align: left;
+}
+table.r td {
+text-align: right;
+}
+table.ir {
+float: right;
+margin-left: 25px;
+margin-top: 25px;
+margin-right: 20px;
+margin-bottom: 25px;
+}
+table.il {
+float: left;
+margin-left: 25px;
+margin-top: 25px;
+margin-right: 20px;
+margin-bottom: 25px;
+}
+table.ic {
+float: none;
+text-align: center;
+margin-left:auto; margin-right:auto;
+margin-top: 25px;
+margin-bottom: 25px;
+}
+h1,h2 {
+text-align: center;
+margin-left: auto;
+margin-right: auto;
+margin: 0; 
+padding: 0; 
+}
+
+
+

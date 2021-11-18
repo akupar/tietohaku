@@ -8,3 +8,6 @@ ul li ul li:first-child {
     font-weight: bold;
 }
 
+ul.menu li {
+    display: inline-block;
+}

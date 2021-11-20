@@ -4,8 +4,8 @@
 	hs = kasittele(hs);
 	var ed = null;
 	for ( var i in lista ) {
-	    //console.log(lista[i][0] + " >= " + hs + " ?");
-	    if ( lista[i][0] >= hs ) {
+	    console.log(lista[i][0] + " > " + hs + " ?");
+	    if ( lista[i][0].localeCompare(hs) === 1 ) {
 		return [ ed, lista[i] ];
 	    }
 	    ed = lista[i];

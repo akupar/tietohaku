@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html dir="ltr" class="client-js" lang="fi"><head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Hae artikkeleita (suomi)</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div id="sidebar">
+      <h2>Kirjat ja osat</h2>
+    </div>
+    <div id="main">
+    <ul class="menu">
+      <li><a href="../index.html">..</a></li>
+    </ul>
+    
+    <h1>Hae artikkeleita</h1>
+    
+    <p>
+      Näyttää annetun artikkelinimen sivun paikan valituista Project Runebergissä olevista hakutekosista, joissa hakukielenä on suomi.
+    </p>
+    <p>
+      Huom. ohjelma ei tiedä onko hakusanaa sanakirjassa, vaan ainoastaan antaa suoran linkin sivulle tai sivuille, joilla sen aakkostuksen mukaan pitäisi olla.
+    </p>
+
+    <form id="lomake" method="post">
+      <label>Artikkeli: <input type="text" id="hakusana" value="" /></label>
+      <input type="submit" id="hae" value="Hae" />
+    </form>
+    <div id="result">
+
+    </div>
+
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+
+    <script src="data/tieto.js" type="text/javascript"></script>
+    <script src="data/pieni.js" type="text/javascript"></script>    
+    <script src="data/fisv1968.js" type="text/javascript"></script>
+    <script src="data/fiet1971.js" type="text/javascript"></script>
+    <script src="data/aikalais1934.js" type="text/javascript"></script>
+    <script src="data/kuka1954.js" type="text/javascript"></script>
+    <script src="data/kuka1978.js" type="text/javascript"></script>            
+
+    <script src="main.js" type="text/javascript"></script>
+    </div>
+  </body>
+</html>

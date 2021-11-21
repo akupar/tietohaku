@@ -1,8 +1,8 @@
-if ( !window.books ) {
-    window.books = [];
+if ( !window.loadedBooks ) {
+    window.loadedBooks = [];
 }
 
-window.books.push({
+window.loadedBooks.push({
     title: "Kuka kukin on 1954",
     id: "kuka1954",
     url: "http://runeberg.org/kuka/1954/",

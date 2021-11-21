@@ -1,8 +1,8 @@
-if ( !window.books ) {
-    window.books = [];
+if ( !window.loadedBooks ) {
+    window.loadedBooks = [];
 }
 
-window.books.push({
+window.loadedBooks.push({
     title: "Suomalais-eestiläinen sanakirja",
     id: "fiet1971",
     url: "http://runeberg.org/fiet1971/",

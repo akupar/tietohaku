@@ -103,7 +103,7 @@
 
     function getResults(hs) {
         var result = [];
-        var books = window.books;
+        var books = window.loadedBooks;
         
         for ( var book of books ) {
             
@@ -203,8 +203,10 @@
         var $bookLi = $("<li></li>");
         $bookLi.attr('id', book.id);
         
-        $bookLi.append($("<span></span>").text(book.title));            
-        $bookLi.append($result_formatParts(book.parts, book.urlpref));
+        $bookLi.append($("<span></span>").text(book.title));
+        var $partsUl = $result_formatParts(book.parts, book.urlpref);
+        $partsUl.hide();
+        $bookLi.append($partsUl);
 
         if ( $('[name=' + book.id + ']').get(0).checked ) {
             $bookLi.show();
@@ -213,6 +215,8 @@
             $bookLi.hide();
             $("[name=" + book.id + "]").parent().next("ul").find("input").attr('disabled', true);
         }
+
+        $partsUl.slideDown();
         
         return $bookLi;
     }
@@ -241,12 +245,14 @@
     }
 
 
-    function $bookList_formatPart(part, id, hiddenBooks) {
+    function $bookList_formatPart(part, id, shownBooks) {
         var $partLi = $("<li></li>");
         var $label = $('<label></label>').text(" " + part.title);
         var $checkbox = $('<input type="checkbox" />').attr('name', id);
+        
         $checkbox.change(toggleVisibility);
-        if ( id in hiddenBooks ) {
+        
+        if ( id in shownBooks ) {
             $checkbox.attr('checked', false);
         } else {
             $checkbox.attr('checked', true);
@@ -260,54 +266,65 @@
     }
     
 
-    function $bookList_formatParts(parts, book, hiddenBooks) {
+    function $bookList_formatParts(parts, book, shownBooks) {
         var $partsUl = $('<ul></ul>');
         
         for ( var i in parts ) {
-            $partsUl.append($bookList_formatPart(parts[i], book.id + "-" + i, hiddenBooks));
+            $partsUl.append($bookList_formatPart(parts[i], book.id + "-" + i, shownBooks));
         }
 
         return $partsUl;
 
     }
 
-    function $bookList_formatBook(book, hiddenBooks) {
+    function $bookList_formatBook(book, shownBooks) {
         var $bookLi = $("<li></li>");
         var $label = $('<label></label>').text(" " + book.title);
         var $checkbox = $('<input type="checkbox" />').attr('name', book.id);
+        
         $checkbox.change(toggleVisibility);
-        if ( book.id in hiddenBooks ) {
-            $checkbox.attr('checked', false);
-        } else {
+        
+        if ( shownBooks.indexOf(book.id) > -1 ) {
             $checkbox.attr('checked', true);
+        } else {
+            $checkbox.attr('checked', false);
         }
 
 
         $label.prepend($checkbox);
         
         $bookLi.append($label);
-        $bookLi.append($bookList_formatParts(book.parts, book, hiddenBooks));
+        //$bookLi.append($bookList_formatParts(book.parts, book, shownBooks));
 
         return $bookLi;
     }
 
-    function $bookList_formatBooks(books, hiddenBooks) {
-        var $booksUl = $('<ul class="booklist"></ul>');
+    function $bookList_formatBooks(books, shownBooks) {
+        var $booksUl = $('#booklist');
         
         for ( var book of books ) {
-            $booksUl.append($bookList_formatBook(book, hiddenBooks));
-        }
+            $booksUl.append($bookList_formatBook(book, shownBooks));
+       }
 
         return $booksUl;
     }
-    
 
-    function $makeBookList(hiddenBooks) {
-        var books = window.books;
 
-        return $bookList_formatBooks(books, hiddenBooks);
+    function $makeBookList(books, shownBooks) {
+        return $bookList_formatBooks(books, shownBooks);
     }
 
+    function bookList_addBook(book, shownBooks) {
+        var $bookLi = $('#book-' + book.id);
+
+        var $partsUl = $bookList_formatParts(book.parts, book, shownBooks);
+        $partsUl.hide();
+        $bookLi.append(
+            $partsUl
+        );
+        $partsUl.slideDown();
+    }    
+    
     function getQuery() {
         var urlSearchParams = new URLSearchParams(window.location.search);
         return Object.fromEntries(urlSearchParams.entries());
@@ -323,9 +340,22 @@
             }
         });
 
-        return list.join(",");
+        return list.join(" ");
     }
 
+    function getSelectedBooks() {
+        var $cbs = $('input[type="checkbox"]');
+        var list = [];
+        
+        $cbs.each(function () {
+            if ( $(this).attr('checked') === true ) {
+                list.push($(this).attr('name'));
+            }
+        });
+
+        return list;
+    }
+    
     function removeUndefined(obj) {
         var out = {};
         for ( var key in obj ) {
@@ -336,48 +366,145 @@
         return out;
     }
 
-    function run($) {
-	var $frm_lomake = $("#lomake");	
-	var $btn_hae = $("#hae");	
-	var $tb_hakusana = $("#hakusana");
+    var books = [
+    ];
 
+
+    function loadBook(bookName, shownBooks, callback) {
+        var scriptName = "data/" + bookName + ".js";
+        var d = $.Deferred();
+        
+        var script = document.createElement('script');
+        script.onload = function () {
+            var book = window.loadedBooks.find(function (book) { return book.id === bookName; });
+
+            $('[name="' + bookName + '"]').attr('checked', true);
+            bookList_addBook(book, shownBooks);
+
+            d.resolve();
+        };
+        
+        script.src = scriptName;
+        document.head.appendChild(script); //or something of the likes
+
+        return d;
+    }
+
+
+    function loadBooks(shownBooks) {
+        var loadings = [];
+        
+        for ( var bookName of shownBooks ) {
+            loadings.push(
+                loadBook(bookName, shownBooks)
+            );
+        }
+
+        return $.when.apply($, loadings);
+    }
+    
+
+    function getShownBooks(query) {
+        if ( query.show ) {
+            return query.show.split(" ").filter(function (id) { return id.indexOf("-") === -1; });
+        }
+
+        // If none selected, load all.
+        var allBooks = [];
+        var $cbs = $('.booklist [type="checkbox"]');
+
+        $cbs.each(function () {
+            allBooks.push($(this).attr('name'));
+        });
+
+
+        return allBooks;
+    }
+
+    function addHistoryItem(state) {
+        state = removeUndefined(state);
+        
+        history.pushState(state, '”' + state.term + '” – Hae Tietosanakirjasta', "?" + $.param(state).replaceAll("%2B", " "));
+    }
+
+    function bookSelectionChange($event) {
+        var $this  = $($event.target);
+        var bookId = $this.attr('name');
+        var loaded = window.loadedBooks.find(function (book) { return book.id === bookId; });
+        var query = getQuery();
+        var shownBooks = getSelectedBooks();
+
+        
+        if ( $this.attr('checked') === true ) {
+            if ( !loaded ) {
+                loadBook(bookId, shownBooks).then(function () {
+                    submitQuery();
+                });
+            } else {
+                $this.parent().next("ul").slideDown();
+                submitQuery();
+            }
+        } else if ( $this.attr('checked') === false ) {
+            $this.parent().next("ul").slideUp();
+            submitQuery();
+        }
+
+        addHistoryItem({
+            term: query.term,
+            show: shownBooks.join(" ") || undefined
+        });
+        
+    }
+
+
+    function submitQuery($event) {
+        if ( $event ) {
+            $event.preventDefault();
+        }
+
+	var queryTerm = $("#hakusana").val();
+        if ( !queryTerm ) {
+            return false;
+        }
+
+        $('title').text('”' + queryTerm + '” – Tietohaku (suomi)');
+        var result = getResults(queryTerm);
+
+        $('#result').html($result_formatBooks(result));
+
+        addHistoryItem({
+            term: queryTerm,
+            show: getSelectedBooks().join(" ")
+        });
+
+        return false;
+    }
+
+    
+
+    function run() {
         var query = getQuery();
 
-        if ( query.term ) {
-            $('title').text('”' + query.term + '” – Tietohaku (suomi)');
-            $tb_hakusana.val(query.term);            
-        }
+        $("#hakusana").val(query.term || "");
 
-
-
-        var hiddenBooks = {};
-        if ( query.hide ) {
-            hiddenBooks = query.hide.split(",").reduce(function (o, x) { o[x] = true; return o;}, {});
-        }
+        $('[type="checkbox"]').change(bookSelectionChange);
+	$("#lomake").submit(submitQuery);
         
-        $("#sidebar").append($makeBookList(hiddenBooks));
 
-	$frm_lomake.submit(function ($event) {
-	    var hs = $tb_hakusana.val();
-            $event.preventDefault();
-            if ( !hs ) {
-                return false;
-            }
-            
-            var params = 
-                window.location.search = "?" + $.param(
-                    removeUndefined({
-                        term: $tb_hakusana.val(),
-                        hide: getHiddenBooks() || undefined
-                    })
-                );
-	});
+        var shownBooks = getShownBooks(query);
+        
+        loadBooks(shownBooks)
+            .then(function () {
+                console.log("all loaded");
+                submitQuery();
+            });
+        
+        $("#sidebar").append($makeBookList(books, shownBooks));
 
-        if ( query.term ) {
-            var result = getResults(query.term);
 
-            $('#result').html($result_formatBooks(result));
-        }
+
+        
+
     }
 
     jQuery(document).ready(run);

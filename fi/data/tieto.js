@@ -1,8 +1,10 @@
-if ( !window.books ) {
-    window.books = [];
+(function () {
+
+    if ( !window.loadedBooks ) {
+    window.loadedBooks = [];
 }
 
-window.books.push({
+window.loadedBooks.push({
     title: "Tietosanakirja (1909–1922)",
     id: "tieto",
     url: "http://runeberg.org/tieto/",
@@ -16804,3 +16806,5 @@ window.books.push({
         }
     ]
 });
+
+    }());

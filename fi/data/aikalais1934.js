@@ -1,8 +1,8 @@
-if ( !window.books ) {
-    window.books = [];
+if ( !window.loadedBooks ) {
+    window.loadedBooks = [];
 }
 
-window.books.push({
+window.loadedBooks.push({
     title: "Aikalaiskirja 1934",
     id: "aikalais1934",
     url: "http://runeberg.org/aikalais/1934/",

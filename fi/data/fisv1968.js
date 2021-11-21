@@ -1,8 +1,8 @@
-if ( !window.books ) {
-    window.books = [];
+if ( !window.loadedBooks ) {
+    window.loadedBooks = [];
 }
 
-window.books.push({
+window.loadedBooks.push({
     title: "Finsk-svensk ordbok",
     id: "fisv1968",
     url: "http://runeberg.org/fisv1968/",

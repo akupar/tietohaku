@@ -1,26 +1,21 @@
 (function(w){
-    function escapeClassName(className) {
 
-        //return className.replace(/[^a-zA-Z0-9_-]/g, "");
-        
-        // ei toimi firefoxin inspectorilla
-        return className.replace(/./g, function (char) {
-            if ( char.match(/[a-zA-Z0-9_-]/) ) {
-                return char;
-            }
-            else if ( char in [ "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":",
-                                ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "`", "{", "|", "}", "~" ] ) {
+    window.loadedBooks = window.loadedBooks || [];
 
-                return "\\" + char;                
-                //return "\\" + char;
-            } else {
-                return "";
-                //return "\\" + parseInt(char.charCodeAt(0), 16);
-            }
-        });
+    function clearError() {
+        if ( $("#error-message").data('timer') ) {
+            clearTimeout($("#error-message").data('timer'));
+        }
+        $("#error-message").hide();
     }
-
-
+    function setError(errorMessage) {
+        clearError();
+        $("#error-message").html(errorMessage);
+        $("#error-message").data('timer', setTimeout(clearError, 3000));
+        $("#error-message").show();
+    }
+    
+    
     function pageListItemToObject(item) {
         if ( !item ) {
             return null;
@@ -87,15 +82,8 @@
     }
     
     
-    function zeropad(num) {
-        var num_s = String(num);
-        var s = "0000" + num_s;
-        return s.substr(num_s.length);
-    }
-
-    window.zeropad = zeropad;
-
     function makeURL(pref, page) {
+        console.assert(pref.endsWith("/"));
         return pref + page + ".html";
 
     }
@@ -277,44 +265,7 @@
 
     }
 
-    function $bookList_formatBook(book, shownBooks) {
-        var $bookLi = $("<li></li>");
-        var $label = $('<label></label>').text(" " + book.title);
-        var $checkbox = $('<input type="checkbox" />').attr('name', book.id);
-        
-        $checkbox.change(toggleVisibility);
-        
-        if ( shownBooks.indexOf(book.id) > -1 ) {
-            $checkbox.attr('checked', true);
-        } else {
-            $checkbox.attr('checked', false);
-        }
-
-
-        $label.prepend($checkbox);
-        
-        $bookLi.append($label);
-        //$bookLi.append($bookList_formatParts(book.parts, book, shownBooks));
-
-        return $bookLi;
-    }
-
-    function $bookList_formatBooks(books, shownBooks) {
-        var $booksUl = $('#booklist');
-        
-        for ( var book of books ) {
-            $booksUl.append($bookList_formatBook(book, shownBooks));
-       }
-
-        return $booksUl;
-    }
-
-
-    function $makeBookList(books, shownBooks) {
-        return $bookList_formatBooks(books, shownBooks);
-    }
-
-    function bookList_addBook(book, shownBooks) {
+    function bookList_loadBook(book, shownBooks) {
         var $bookLi = $('#book-' + book.id);
 
         var $partsUl = $bookList_formatParts(book.parts, book, shownBooks);
@@ -330,18 +281,6 @@
         return Object.fromEntries(urlSearchParams.entries());
     }
 
-    function getHiddenBooks() {
-        var $cbs = $('input[type="checkbox"]');
-        var list = [];
-        
-        $cbs.each(function () {
-            if ( $(this).attr('checked') === false ) {
-                list.push($(this).attr('name'));
-            }
-        });
-
-        return list.join(" ");
-    }
 
     function getSelectedBooks() {
         var $cbs = $('input[type="checkbox"]');
@@ -366,26 +305,24 @@
         return out;
     }
 
-    var books = [
-    ];
 
-
-    function loadBook(bookName, shownBooks, callback) {
+    function loadBook(bookName, shownBooks) {
         var scriptName = "data/" + bookName + ".js";
         var d = $.Deferred();
         
         var script = document.createElement('script');
         script.onload = function () {
             var book = window.loadedBooks.find(function (book) { return book.id === bookName; });
-
             $('[name="' + bookName + '"]').attr('checked', true);
-            bookList_addBook(book, shownBooks);
+            bookList_loadBook(book, shownBooks);
 
+            console.log("Loaded:", book.id);
+            
             d.resolve();
         };
         
         script.src = scriptName;
-        document.head.appendChild(script); //or something of the likes
+        document.head.appendChild(script);
 
         return d;
     }
@@ -409,7 +346,11 @@
             return query.show.split(" ").filter(function (id) { return id.indexOf("-") === -1; });
         }
 
-        // If none selected, load all.
+        // If none selected and search term is present, load all.
+        if ( !query.term ) {
+            return [];
+        }
+        
         var allBooks = [];
         var $cbs = $('.booklist [type="checkbox"]');
 
@@ -428,25 +369,29 @@
     }
 
     function bookSelectionChange($event) {
-        var $this  = $($event.target);
-        var bookId = $this.attr('name');
+        var $thisCheckbox  = $($event.target);
+        var bookId = $thisCheckbox.attr('name');
         var loaded = window.loadedBooks.find(function (book) { return book.id === bookId; });
         var query = getQuery();
         var shownBooks = getSelectedBooks();
-
+        var $resultBlock = $('#' + bookId);
         
-        if ( $this.attr('checked') === true ) {
+        if ( $thisCheckbox.attr('checked') === true ) {
             if ( !loaded ) {
                 loadBook(bookId, shownBooks).then(function () {
                     submitQuery();
                 });
             } else {
-                $this.parent().next("ul").slideDown();
-                submitQuery();
+                $thisCheckbox.parent().next("ul").slideDown();
+                if ( $resultBlock.length > 0 ) {
+                    $resultBlock.slideDown();
+                } else {
+                    submitQuery();
+                }
             }
-        } else if ( $this.attr('checked') === false ) {
-            $this.parent().next("ul").slideUp();
-            submitQuery();
+        } else if ( $thisCheckbox.attr('checked') === false ) {
+            $thisCheckbox.parent().next("ul").slideUp();
+            $resultBlock.slideUp();
         }
 
         addHistoryItem({
@@ -465,6 +410,12 @@
 	var queryTerm = $("#hakusana").val();
         if ( !queryTerm ) {
             return false;
+        }
+
+        var selectedBooks = getSelectedBooks().filter(function (id) { return id.indexOf("-") === -1; });
+        console.log("getSelectedBooks():", selectedBooks);
+        if ( selectedBooks.length === 0 ) {
+            setError("Virhe: Ei ladattuja kirjoja. Valitse kirjat, joista haetaan.");
         }
 
         $('title').text('”' + queryTerm + '” – Tietohaku (suomi)');
@@ -499,9 +450,6 @@
                 submitQuery();
             });
         
-        $("#sidebar").append($makeBookList(books, shownBooks));
-
-
 
         
 

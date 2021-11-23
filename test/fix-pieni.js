@@ -8,8 +8,8 @@ require('../fi/data/pieni.fixed.orig.bak');
 function normalizeQuery(e) {
     e = e.toUpperCase(e);
 
-    e = e.replace(/Æ/g, "AE");
-    e = e.replace(/Ø/g, "OE");
+    e = e.replace(/Æ/g, "Ä");
+    e = e.replace(/Ø/g, "Ö");
     e = e.replace(/É/g, "E");
     e = e.replace(/Č/g, "C");
     e = e.replace(/Š/g, "S");

@@ -8,6 +8,7 @@ window.loadedBooks.push({
     title: "Tietosanakirja (1909–1922)",
     id: "tieto",
     url: "http://runeberg.org/tieto/",
+    collation: "fi",    
     parts: [
         {
             title: "Pääosa",

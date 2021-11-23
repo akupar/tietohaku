@@ -30,15 +30,16 @@ def normalize(hs):
     hs = re.sub(u"Ä", u"b", hs)
     hs = re.sub(u"Ö", u"c", hs)
     hs = re.sub(u"W", u"V", hs)
+    hs = re.sub(u"Ü", u"Y", hs)    
     hs = re.sub(u"Æ", u"AE", hs)
     hs = re.sub(u"Œ", u"OE", hs)
 
     hs = strip_accents(hs)
     hs = re.sub("[^A-Za-c]", "", hs)
     
-    hs = re.sub(u"a", u"Å", hs)
-    hs = re.sub(u"b", u"Ä", hs)
-    hs = re.sub(u"c", u"Ö", hs)
+    //hs = re.sub(u"a", u"Å", hs)
+    //hs = re.sub(u"b", u"Ä", hs)
+    //hs = re.sub(u"c", u"Ö", hs)
     
     return hs
     

@@ -6,6 +6,7 @@ window.loadedBooks.push({
     title: "Finsk-svensk ordbok",
     id: "fisv1968",
     url: "http://runeberg.org/fisv1968/",
+    collation: "fi",
     parts: [
         {
             title: "Pääosa",

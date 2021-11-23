@@ -6,6 +6,7 @@ window.loadedBooks.push({
     title: "Suomalais-eestiläinen sanakirja",
     id: "fiet1971",
     url: "http://runeberg.org/fiet1971/",
+    collation: "fi, s > š",
     parts: [
         {
             title: "Pääosa",
@@ -476,7 +477,7 @@ window.loadedBooks.push({
                 [ "SbNKYPEITE", "sänkypeite", { l: "0471", s: "471" } ],
                 [ "SbVYISb", "sävyisä", { l: "0472", s: "472" } ],
                 [ "SbbRI", "sääri", { l: "0473", s: "473" } ],
-                [ "SOFccRI", "šofööri", { l: "0474", s: "474" } ],
+                [ "ShOFccRI", "šofööri", { l: "0474", s: "474" } ],
                 [ "TAEMMA", "taemma", { l: "0475", s: "475" } ],
                 [ "TAHTOMUS", "tahtomus", { l: "0476", s: "476" } ],
                 [ "TAIKINOIDA", "taikinoida", { l: "0477", s: "477" } ],

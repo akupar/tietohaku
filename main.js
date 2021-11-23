@@ -44,8 +44,8 @@
         return hi;
     }
 
-    function getPages(array, needle) {
-        needle = normalizeQuery(needle);
+    function getPages(array, needle, collation) {
+        needle = normalizeQuery(needle, collation);
         var next_index = binary_search(array, needle);
 
         
@@ -62,7 +62,7 @@
 
 
 
-    function normalizeQuery(e) {
+    function normalizeQuery_fi(e) {
 	e = e.toUpperCase(e);
 
 	e = e.replace(/Æ/g, "Ä");
@@ -71,6 +71,7 @@
 	e = e.replace(/Č/g, "C");
 	e = e.replace(/Š/g, "S");
 	e = e.replace(/Ž/g, "Z");
+        e = e.replace(/Ü/g, "Y");
 	e = e.replace(/W/g, "V");
 
 	e = e.replace(/[^A-ZÅÄÖ0-9]/g, "");
@@ -80,6 +81,53 @@
         
 	return e;
     }
+
+    function normalizeQuery_fi_s(e) {
+	e = e.toUpperCase(e);
+
+	e = e.replace(/Æ/g, "Ä");
+	e = e.replace(/Ø/g, "Ö");
+	e = e.replace(/É/g, "E");
+	e = e.replace(/Č/g, "C");
+	e = e.replace(/Ž/g, "Z");
+        e = e.replace(/Ü/g, "Y");
+	e = e.replace(/W/g, "V");
+
+	e = e.replace(/[^A-ZÅÄÖŠ0-9]/g, "");
+	e = e.replace(/Å/g, "a");
+	e = e.replace(/Ä/g, "b");
+	e = e.replace(/Ö/g, "c");
+	e = e.replace(/Š/g, "Sh");
+
+	return e;
+    }
+
+    function normalizeQuery_en(e) {
+	e = e.toUpperCase(e);
+        e = e.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        e = e.replace(/[^A-Z0-9]/g, " ");
+        
+	return e;
+    }    
+
+    function normalizeQuery(e, collation) {
+        switch ( collation ) {
+            case "fi":
+                return normalizeQuery_fi(e);
+            case "fi, s > š":
+                return normalizeQuery_fi_s(e);
+            case "sv":
+                return normalizeQuery_fi(e);
+            case "en":
+                return normalizeQuery_en(e);
+            case "la":
+                return normalizeQuery_en(e);
+        }
+
+        throw new Error("Unknown collation: " + collation);
+    }
+    
+    
     
     
     function makeURL(pref, page) {
@@ -104,7 +152,7 @@
 
             for ( var i in book.parts ) {
                 var bookPart = book.parts[i];
-                var pages = getPages(bookPart.pages, hs);
+                var pages = getPages(bookPart.pages, hs, book.collation);
 		var prev = pages.prev;
 		var next = pages.next;
 
@@ -166,7 +214,7 @@
         $partLi.append($("<span></span>").text(part.title));            
         $partLi.append($result_formatPages(part.prev, part.next, urlpref));
 
-        if ( $('[name=' + part.id + ']').get(0).checked ) {
+        if ( $('[name=' + part.id + ']').attr('checked') ) {
             $partLi.show();
         } else {
             $partLi.hide();
@@ -196,7 +244,7 @@
         $partsUl.hide();
         $bookLi.append($partsUl);
 
-        if ( $('[name=' + book.id + ']').get(0).checked ) {
+        if ( $('[name=' + book.id + ']').attr('checked') ) {
             $bookLi.show();
         } else {
             $bookLi.hide();
@@ -326,6 +374,7 @@
             $('[name="' + bookName + '"]').attr('checked', true);
             bookList_loadBook(book, shownBooks);
 
+            console.log("LOADED:", book.id);
             d.resolve();
         };
         

@@ -1,21 +1,54 @@
-body {
+h1, h2, h3, h4, h5 {
+    font-family: sans-serif;
+}
+
+#main {
     margin: 0 auto;
     width: 700px;
 }
 
 
-ul li ul li:first-child {
+ul li ul li ul li:first-child {
     font-weight: bold;
 }
 
 ul.menu > li {
     display: inline-block;
+    margin-left: -1em;
 }
 
 ul.menu > li a {
     text-decoration: none;
 }
 
-#tulos {
-    display: none;
+#result > ul > li {
+    margin-bottom: 2em;
+    list-style-type: none;
+    margin-left: -1em;
 }
+
+#result > ul > li > ul > li {
+    margin-bottom: 1.5em;
+}
+
+
+
+#sidebar {
+    float: right;
+    max-width: 300px;
+}
+
+#sidebar li {
+    list-style-type: none;
+}
+
+#error-message {
+    display: none;
+    border: solid salmon 1px;
+    border-radius: 5px;
+    background-color: lightsalmon;
+    padding: 0.5em;
+    margin: 0.5em 0;    
+}
+
+

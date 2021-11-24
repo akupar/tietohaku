@@ -266,19 +266,14 @@
     }
 
 
-    function $bookList_formatPart(part, id, shownBooks) {
+    function $bookList_formatPart(part, partId) {
         var $partLi = $("<li></li>");
         var $label = $('<label></label>').text(" " + part.title);
-        var $checkbox = $('<input type="checkbox" />').attr('name', id);
+        var $checkbox = $('<input type="checkbox" />').attr('name', partId);
         
         $checkbox.change(partSelectionChange);
         
-        if ( id in shownBooks ) {
-            $checkbox.attr('checked', false);
-        } else {
-            $checkbox.attr('checked', true);
-        }
-        
+        $checkbox.attr('checked', true);
         
         $label.prepend($checkbox);
         $partLi.append($label);
@@ -287,21 +282,21 @@
     }
     
 
-    function $bookList_formatParts(parts, book, shownBooks) {
+    function $bookList_formatParts(parts, bookId) {
         var $partsUl = $('<ul></ul>');
         
         for ( var i in parts ) {
-            $partsUl.append($bookList_formatPart(parts[i], book.id + "-" + i, shownBooks));
+            $partsUl.append($bookList_formatPart(parts[i], bookId + "-" + i));
         }
 
         return $partsUl;
 
     }
 
-    function bookList_loadBook(book, shownBooks) {
+    function bookList_loadBook(book) {
         var $bookLi = $('#book-' + book.id);
 
-        var $partsUl = $bookList_formatParts(book.parts, book, shownBooks);
+        var $partsUl = $bookList_formatParts(book.parts, book.id);
         $partsUl.hide();
         $bookLi.append(
             $partsUl
@@ -364,14 +359,19 @@
     }
 
 
-    function loadBook(bookName, shownBooks) {
-        var scriptName = "data/" + bookName + ".js";
+    function loadBook(bookId, shownBooks) {
+        var scriptName = "data/" + bookId + ".js";
         var d = $.Deferred();
         
         var script = document.createElement('script');
         script.onload = function () {
-            var book = window.loadedBooks.find(function (book) { return book.id === bookName; });
-            $('[name="' + bookName + '"]').attr('checked', true);
+            var $bookLi = $('#book-' + bookId);
+            var bookTitle = $bookLi.children('label').text();
+            var book = window.loadedBooks.find(function (book) { return book.id === bookId; });
+            book.id = bookId;
+            book.title = bookTitle;
+
+            $('[name="' + bookId + '"]').attr('checked', true);
             bookList_loadBook(book, shownBooks);
 
             console.log("LOADED:", book.id);
@@ -388,10 +388,10 @@
     function loadBooks(shownBooks) {
         var loadings = [];
         
-        for ( var bookName of shownBooks ) {
-            if ( bookName.indexOf("-") === -1 ) {
+        for ( var bookId of shownBooks ) {
+            if ( bookId.indexOf("-") === -1 ) {
                 loadings.push(
-                    loadBook(bookName, shownBooks)
+                    loadBook(bookId, shownBooks)
                 );
             }
         }
@@ -407,14 +407,14 @@
         var items = query.show.split(" ");
         var bookAndPartNames = items.flatMap(function (item) {
             var bookAndParts = item.split('-');
-            var bookName = bookAndParts[0];
+            var bookId = bookAndParts[0];
             var partNums = bookAndParts.slice(1);
             
             var partNames = partNums.map(function (partNum) {
-                return bookName + "-" + partNum;
+                return bookId + "-" + partNum;
             });
 
-            return [bookName].concat(partNames)
+            return [bookId].concat(partNames)
         });
 
         return bookAndPartNames;
@@ -505,21 +505,21 @@
         
         partNames.forEach(function (partName) {
             var p = partName.split("-");
-            var bookName = p[0];
+            var bookId = p[0];
             var partNum = p[1];
             
-            if ( !map[bookName] ) {
-                map[bookName] = [];
+            if ( !map[bookId] ) {
+                map[bookId] = [];
             }
-            map[bookName].push(partNum);
+            map[bookId].push(partNum);
         });
 
         var out = [];
         
-        for ( var bookName in map ) {
-            var parts = map[bookName].sort();
+        for ( var bookId in map ) {
+            var parts = map[bookId].sort();
 
-            out.push(bookName + "-" + parts.join("-"));
+            out.push(bookId + "-" + parts.join("-"));
         }
 
         if ( out.length === 0 ) {

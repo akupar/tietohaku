@@ -2,6 +2,11 @@ h1, h2, h3, h4, h5 {
     font-family: sans-serif;
 }
 
+h1 a {
+    text-decoration: none;
+    color: black;
+}
+
 #main {
     margin: 0 auto;
     width: 700px;
@@ -40,6 +45,10 @@ ul.menu > li a {
 
 #sidebar li {
     list-style-type: none;
+}
+
+.book-title-meta {
+    font-size: x-small;
 }
 
 #error-message {

@@ -1,36 +1,94 @@
 <!DOCTYPE html>
 <html dir="ltr" class="client-js" lang="fi"><head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="UTF-8">
-    <title>Hae artikkeleita (suomi)</title>
-    <link rel="stylesheet" href="index.css">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <title>Hae Project Runebergin hakuteoksista</title>
+    <meta name="description" content="Hae artikkeleita Project Runebegissa olevista hakuteoksista, kuten Tietosanakirja (1909–1922), Pieni Tietosanakirja, Kuka kukin on, suomalais-virolainen sanakirja, suomalais-ruotsalainen sanakirja, ruotsalais-suomalainen sanakirja, latinalais-suomalainen sanakirja ja englantialis-suomalainen tekniikan ja kaupan sanakirja."/>
+    
+    <link rel="stylesheet" href="index.css"/>
   </head>
   <body>
     <div id="sidebar">
       <h2>Kirjat ja osat</h2>
       <ul class="booklist">
-        <li id="book-aikalais1934"><label><input type="checkbox" name="aikalais1934" />Aikalaiskirja 1934</label></li>
-        <li id="book-fiet1971"><label><input type="checkbox" name="fiet1971" />Suomalais-eestiläinen sanakirja (1971)</label></li>
-        <li id="book-fisv1968"><label><input type="checkbox" name="fisv1968" />Finsk-svensk ordbok (1968)</label></li>
-        <li id="book-kuka1954"><label><input type="checkbox" name="kuka1954" />Kuka kukin on 1954</label></li>
-        <li id="book-kuka1978"><label><input type="checkbox" name="kuka1978" />Kuka kukin on 1978</label></li>
-        <li id="book-pieni"><label><input type="checkbox" name="pieni" />Pieni Tietosanakirja</label></li>
-        <li id="book-tieto"><label><input type="checkbox" name="tieto" />Tietosanakirja (1909–1922)</label></li>
+        <li id="book-pieni">
+          <label>
+            <input type="checkbox" name="pieni" />Pieni Tietosanakirja <span class="book-title-meta">(1925–1928)</span><a href="http://runeberg.org/pieni/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-tieto">
+          <label>
+            <input type="checkbox" name="tieto" />Tietosanakirja <span class="book-title-meta">(1909–1922)</span> <a href="http://runeberg.org/tieto/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-aikalais1934">
+          <label>
+            <input type="checkbox" name="aikalais1934" />Aikalaiskirja 1934 <a href="http://runeberg.org/aikalais/1934/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-kuka1954">
+          <label>
+            <input type="checkbox" name="kuka1954" />Kuka kukin on 1954 <a href="http://runeberg.org/kuka/1954/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-kuka1978">
+          <label>
+            <input type="checkbox" name="kuka1978" />Kuka kukin on 1978 <a href="http://runeberg.org/kuka/1978/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-fiet1971">
+          <label>
+            <input type="checkbox" name="fiet1971" />Suomalais-eestiläinen sanakirja <span class="book-title-meta">(1971)</span> <a href="http://runeberg.org/fiet1971/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-fisv1968">
+          <label>
+            <input type="checkbox" name="fisv1968" />Finsk-svensk ordbok <span class="book-title-meta">(1968)</span> <a href="http://runeberg.org/fisv1968/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
         
+        <hr/>
+        <li id="book-svfi1887">
+          <label>
+            <input type="checkbox" name="svfi1887" />Svensk-finsk ordbook <span class="book-title-meta">(1887)</span> <a href="http://runeberg.org/svfi1887/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-svfi1930">
+          <label>
+            <input type="checkbox" name="svfi1930" />Svensk-finsk lexicon <span class="book-title-meta">(Cannelin 1930)</span> <a href="http://runeberg.org/svfi1930/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        <li id="book-svfi1960">
+          <label>
+            <input type="checkbox" name="svfi1960" />Svensk-finsk ordbook <span class="book-title-meta">(1960)</span> <a href="http://runeberg.org/svfi1960/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
         
-        <li id="book-svfi1887"><label><input type="checkbox" name="svfi1887" />Svensk-finsk ordbook (1887)</label></li>
-        <li id="book-svfi1930"><label><input type="checkbox" name="svfi1930" />Svensk-finsk lexicon (Cannelin 1930)</label></li>
-        <li id="book-svfi1960"><label><input type="checkbox" name="svfi1960" />Svensk-finsk ordbook (1960)</label></li>
-        <li id="book-lafi1974"><label><input type="checkbox" name="lafi1974" />Latinalais-suomalainen sanakirja (Laine–Linkomies 1974)</label></li>
-        <li id="book-tekasana"><label><input type="checkbox" name="tekasana" />Englantilais-suomalainen tekniikan ja kaupan sanakirja</label></li>
+        <hr/>
+        
+        <li id="book-lafi1974">
+          <label>
+            <input type="checkbox" name="lafi1974" />Latinalais-suomalainen sanakirja <span class="book-title-meta">(Laine–Linkomies 1974)</span> <a href="http://runeberg.org/lafi1974/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
+        
+        <hr/>
+        
+        <li id="book-tekasana">
+          <label>
+            <input type="checkbox" name="tekasana" />Englantilais-suomalainen tekniikan ja kaupan sanakirja <span class="book-title-meta">(1960)</span> <a href="http://runeberg.org/tekasana/"><img src="External-link.svg"/></a>
+          </label>
+        </li>
       </ul>
     </div>
     <div id="main">
     
-    <h1>Hae artikkeleita</h1>
+    <h1><a href="index.html">Haku Project Runebergin hakuteoksista</a></h1>
     
     <p>
-      Näyttää annetun artikkelinimen sivun paikan valituista Project Runebergissä olevista hakutekosista, joissa hakukielenä on suomi.
+      Näyttää annetun hakusanan sivun paikan valituista Project Runebergissä olevista hakuteoksista.
     </p>
     <p>
       Huom. ohjelma ei tiedä onko hakusanaa sanakirjassa, vaan ainoastaan antaa suoran linkin sivulle tai sivuille, joilla sen aakkostuksen mukaan pitäisi olla.

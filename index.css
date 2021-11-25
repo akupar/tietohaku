@@ -2,6 +2,10 @@ h1, h2, h3, h4, h5 {
     font-family: sans-serif;
 }
 
+h1 {
+    font-size: 25px;
+}
+
 h1 a {
     text-decoration: none;
     color: black;
@@ -13,9 +17,6 @@ h1 a {
 }
 
 
-ul li ul li ul li:first-child {
-    font-weight: bold;
-}
 
 ul.menu > li {
     display: inline-block;
@@ -26,16 +27,27 @@ ul.menu > li a {
     text-decoration: none;
 }
 
-#result > ul > li {
-    margin-bottom: 2em;
-    list-style-type: none;
-    margin-left: -1em;
+#result h2 {
+    font-size: 16px;
+    background-color: lightblue;
 }
 
-#result > ul > li > ul > li {
+#result > ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#result ul {
     margin-bottom: 1.5em;
 }
 
+#result ul > li > ul > li > ul > li:first-child {
+    font-weight: bold;
+}
+
+.book-result {
+    display: none;
+}
 
 
 #sidebar {

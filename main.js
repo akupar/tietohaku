@@ -236,33 +236,33 @@
     }
 
     function $result_formatBook(book) {
-        var $bookLi = $("<li></li>");
-        $bookLi.attr('id', book.id);
+        var $bookDiv = $("#book-" + book.id);
         
-        $bookLi.append($("<span></span>").text(book.title));
         var $partsUl = $result_formatParts(book.parts, book.urlpref);
-        $partsUl.hide();
-        $bookLi.append($partsUl);
+        if ( $bookDiv.children("ul").length === 0 ) {
+            $partsUl.hide();
+        } else {
+            $bookDiv.children("ul").html("");
+        }
+        $bookDiv.append($partsUl);
 
         if ( $('[name=' + book.id + ']').attr('checked') ) {
-            $bookLi.show();
+            $bookDiv.show();
         } else {
-            $bookLi.hide();
+            $bookDiv.hide();
         }
 
         $partsUl.slideDown();
         
-        return $bookLi;
+        return $bookDiv;
     }
 
     function $result_formatBooks(books) {
-        var $booksUl = $('<ul></ul>');
         
         for ( var book of books ) {
-            $booksUl.append($result_formatBook(book));
+            $result_formatBook(book);
         }
 
-        return $booksUl;
     }
 
 
@@ -294,15 +294,42 @@
     }
 
     function bookList_loadBook(book) {
-        var $bookLi = $('#book-' + book.id);
-
         var $partsUl = $bookList_formatParts(book.parts, book.id);
         $partsUl.hide();
-        $bookLi.append(
-            $partsUl
-        );
+
+        var $bookLi = $('#select-' + book.id);
+        $bookLi.append($partsUl);
+        
         $partsUl.slideDown();
     }    
+
+    
+    function $booklist_formatBook(book) {
+        var $checkbox = $('<input type="checkbox" />');
+        $checkbox.attr('name', book.id);
+        $checkbox.change(bookSelectionChange);
+
+        var $label = $('<label></label>');
+        $label.text(" " + book.title);
+        $label.prepend($checkbox);
+
+        var $bookLi = $("<li></li>");
+        $bookLi.attr('id', 'select-' + book.id);
+        $bookLi.append($label);
+
+        return $bookLi;
+    }
+
+    function $booklist_formatBooks(books) {
+        var $booksUl = $('<ul></ul>');
+        
+        for ( var book of books ) {
+            $booksUl.append($booklist_formatBook(book));
+        }
+
+        return $booksUl;
+    }
+
     
     function getQuery() {
         var urlSearchParams = new URLSearchParams(window.location.search);
@@ -365,7 +392,7 @@
         
         var script = document.createElement('script');
         script.onload = function () {
-            var $bookLi = $('#book-' + bookId);
+            var $bookLi = $('#select-' + bookId);
             var bookTitle = $bookLi.children('label').text();
             var book = window.loadedBooks.find(function (book) { return book.id === bookId; });
             book.id = bookId;
@@ -377,9 +404,12 @@
             console.log("LOADED:", book.id);
             d.resolve();
         };
-        
+
         script.src = scriptName;
-        document.head.appendChild(script);
+        document.head.appendChild(script);    
+
+        
+        
 
         return d;
     }
@@ -432,23 +462,27 @@
         var loaded = window.loadedBooks.find(function (book) { return book.id === bookId; });
         var query = getQuery();
         var shownBooks = getSelectedBooks();
-        var $children = $thisCheckbox.parent().next("ul").find('[type="checkbox"]');
+        var $resultBlock = $('#book-' + bookId);
+        var $partsUl = $thisCheckbox.parent().next("ul");
+        var $partCheckboxes = $partsUl.find('[type="checkbox"]');
+        
         var atleastOneChecked = false;
-        $children.each(function () {
+        $partCheckboxes.each(function () {
             atleastOneChecked ||= $(this).attr('checked');
         });
-        var $resultBlock = $('#' + bookId);
+        
+        
         
         if ( $thisCheckbox.attr('checked') === true ) {
             if ( !atleastOneChecked ) {
-                $children.attr('checked', true);
+                $partCheckboxes.attr('checked', true);
             }
             if ( !loaded ) {
                 loadBook(bookId, shownBooks).then(function () {
                     submitQuery();
                 });
             } else {
-                $thisCheckbox.parent().next("ul").slideDown();
+                $partsUl.slideDown();
                 if ( $resultBlock.length > 0 ) {
                     $resultBlock.slideDown();
                 } else {
@@ -456,7 +490,7 @@
                 }
             }
         } else if ( $thisCheckbox.attr('checked') === false ) {
-            $thisCheckbox.parent().next("ul").slideUp();
+            $partsUl.slideUp();
             $resultBlock.slideUp();
         }
 
@@ -550,7 +584,7 @@
         $('title').text('”' + queryTerm + '” – Haku (' + selectedBooks.join(", ") + ')');
         var result = getResults(queryTerm);
 
-        $('#result').html($result_formatBooks(result));
+        $result_formatBooks(result);
 
         addHistoryItem({
             term: queryTerm,
@@ -567,8 +601,19 @@
 
         $("#hakusana").val(query.term || "");
 
-        $('[type="checkbox"]').change(bookSelectionChange);
 	$("#lomake").submit(submitQuery);
+
+        var allBooks = [];
+        $('.book-result').each(function () {
+            var id = $(this).attr('id').replace(/^book-/, '');
+            var title = $(this).children('h2').text().trim();
+            allBooks.push({
+                id: id,
+                title: title
+            });
+        });
+
+        $('#sidebar').append($booklist_formatBooks(allBooks));
         
 
         var shownBooks = getShownBooks(query);

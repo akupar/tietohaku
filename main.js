@@ -547,7 +547,7 @@
             setError("Virhe: Ei valittuja kirjoja tai osia. Valitse kirjat ja osat, joista haetaan.");
         }
 
-        $('title').text('”' + queryTerm + '” – Tietohaku (suomi)');
+        $('title').text('”' + queryTerm + '” – Haku (' + selectedBooks.join(", ") + ')');
         var result = getResults(queryTerm);
 
         $('#result').html($result_formatBooks(result));

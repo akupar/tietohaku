@@ -1,0 +1,28 @@
+body {
+    background-color: lightgoldenrodyellow;
+}
+
+
+#top-bar {
+    margin-bottom: 1em;
+}
+
+#top-bar {
+    text-align: center;
+}
+
+iframe {
+    width: 100%;
+}
+
+#result {
+    text-align: left;
+    position: absolute;
+    margin: auto 0;
+    background-color: white;
+    border: solid black 1px;
+    padding: 1em;
+    display: none;
+}
+
+               

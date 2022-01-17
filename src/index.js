@@ -563,6 +563,27 @@
         return out.join(" ");
     }
 
+    function showGoogleSearchButtons() {
+        $('#sidebar li').each(function () {
+            const id = $(this).attr('id');
+            const book = id.replace('select-', '');
+            const $button = $('<input type="button" value="G" />');
+            $button.attr('title', 'Google-haku kirjan sisällöstä');
+            $button.attr('class', 'ghaku');
+            $button.click(event => {
+                const searchTerms = $('#hakusana').val();
+                if ( searchTerms.trim() === "" ) {
+                    alert("Kirjoita hakusana kenttään: " + searchTerms);
+                    return;
+                }
+                const searchQuery = searchTerms + ' site:runeberg.org/' + book;
+                const url = 'https://www.google.fi/search?' + $.param({ q: searchQuery });
+                window.open(url);
+            });
+            $(this).append($button);
+        });
+    }
+
 
     function submitQuery($event) {
         if ( $event ) {
@@ -622,9 +643,8 @@
             .then(function () {
                 submitQuery();
             });
-        
 
-        
+        showGoogleSearchButtons();
 
     }
 

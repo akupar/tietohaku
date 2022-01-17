@@ -573,12 +573,12 @@
             $button.click(event => {
                 const searchTerms = $('#hakusana').val();
                 if ( searchTerms.trim() === "" ) {
-                    alert("Kirjoita hakusana kenttään: " + searchTerms);
+                    setError("Virhe: Ei hakusanaa. Kirjoita hakusana Artikkeli-kenttään.");
                     return;
                 }
                 const searchQuery = searchTerms + ' site:runeberg.org/' + book;
                 const url = 'https://www.google.fi/search?' + $.param({ q: searchQuery });
-                window.open(url);
+                window.open(url, "_blank");
             });
             $(this).append($button);
         });
